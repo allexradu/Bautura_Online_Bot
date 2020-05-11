@@ -1,3 +1,7 @@
+category_url = ''
+sub_category_url = ''
+
+
 def sub_category_xpath(index):
     return '//*[@id="narrow-by-list"]/dd[1]/ol/li[{index}]/a'.format(index = index)
 

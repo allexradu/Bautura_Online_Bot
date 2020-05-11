@@ -14,10 +14,17 @@ def find_sub_category_range_size(self):
     while True:
         try:
             elem = self.driver.find_element_by_xpath(extra_functions.sub_category_xpath(range_size))
+        except NoSuchElementException:
+            if range_size == 1:
+                range_size = 0
+                break
+            else:
+                break
+        else:
             print(elem.text)
             range_size += 1
-        except NoSuchElementException:
-            break
+            print(range_size)
+
     return range_size
 
 

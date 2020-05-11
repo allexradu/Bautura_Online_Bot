@@ -9,56 +9,53 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import ElementClickInterceptedException
 
-main_category_url = ''
-navigation_url = ''
-has_sub_category = False
-
 
 def main_category_loop(self, delay):
     for main_category_index in range(2, 9):
         # pressing the main category in the loop
         elem = self.driver.find_element_by_css_selector(
             'ul#nav>li:nth-of-type({main_category_index})>a'.format(main_category_index = main_category_index))
-        global main_category_url
-        main_category_url = elem.get_attribute('href')
         main_category = elem.text
         print(main_category)
         self.driver.execute_script("arguments[0].click();", elem)
+
+        sleep(delay)
 
         sub_category_loop(self, ranges.find_sub_category_range_size(self), delay)
 
 
 def sub_category_loop(self, loop_size, delay):
-    for i in range(loop_size):
-        # clicking on the fist sub-category
-        # //*[@id="narrow-by-list"]/dd[1]/ol/li[THIS IS THE PARAMETER THAT CHANGES]/a
-        global has_sub_category
-        global main_category_url
-        try:
-            element = self.driver.find_element_by_xpath(extra_functions.sub_category_xpath(i))
-            global navigation_url
-            navigation_url = element.get_attribute('href')
-            sub_category = element.text
-            print(sub_category)
-            element = self.driver.find_element_by_xpath(extra_functions.sub_category_xpath(i))
-            element.click()
-            sleep(delay)
+    if loop_size != 0:
+        print('sub cat', loop_size)
+        for i in range(loop_size):
+            # clicking on the fist sub-category
+            # //*[@id="narrow-by-list"]/dd[1]/ol/li[THIS IS THE PARAMETER THAT CHANGES]/a
+            try:
+                element = self.driver.find_element_by_xpath(extra_functions.sub_category_xpath(i))
+                sub_category = element.text
+                print(sub_category)
+                element.click()
+                sleep(delay)
+                product_page_loop(self, delay)
 
-        except NoSuchElementException:
-            navigation_url = main_category_url
-            has_sub_category = False
-        except ElementClickInterceptedException:
-            sleep(2)
-            continue
+            except NoSuchElementException:
+                print('no element')
+            except ElementClickInterceptedException:
+                print('element interrupted')
+
+
         else:
-            has_sub_category = True
-
-        product_page_loop(self, delay)
+            product_page_loop(self, delay)
 
 
 def product_page_loop(self, delay):
-    index = 11
-    while True:
+    element = self.driver.find_element_by_class_name('last-page')
+    inner_html = element.get_attribute('innerHTML')
+    last_page = int(inner_html[(inner_html.find('p=') + 2):inner_html.find('">')])
+    url = inner_html[(inner_html.find('href="') + 6): inner_html.find('p=')]
+    index = 1
+
+    while index <= last_page:
         for i in range(ranges.find_product_range_size(self) - 1):
             clicking_on_product(self, i, delay)
             getting_product_id(self, delay)
@@ -67,18 +64,27 @@ def product_page_loop(self, delay):
             getting_attributes(self, delay)
             getting_product_image_url(self, delay)
 
-        element = self.driver.find_element_by_class_name('last-page')
-        html_string = element.get_attribute('innerHTML')
-        last_page = int(html_string[(html_string.find('?p=') + 3): html_string.find('"><span>')])
+            self.driver.execute_script("window.history.go(-1)")
+            sleep(delay)
 
         if index != last_page:
-            self.driver.get(navigation_url + '?p={index}'.format(index = index))
-        else:
-            if has_sub_category:
-                self.driver.get(main_category_url)
-                break
-            else:
-                break
+            self.driver.get(url + '?p={index}'.format(index = index + 1))
+        self.driver.execute_script("window.history.go(-1)")
+
+    self.driver.execute_script("window.history.go(-1)")
+
+    # element = self.driver.find_element_by_class_name('last-page')
+    # html_string = element.get_attribute('innerHTML')
+    # last_page = int(html_string[(html_string.find('?p=') + 3): html_string.find('"><span>')])
+
+    # if index != last_page:
+    #     self.driver.get(navigation_url + '?p={index}'.format(index = index))
+    # else:
+    #     if has_sub_category:
+    #         self.driver.get(main_category_url)
+    #         break
+    #     else:
+    #         break
 
 
 def clicking_on_product(self, i, delay):
@@ -194,7 +200,6 @@ def getting_product_image_url(self, delay):
         element = self.driver.find_element_by_id('product-image-img')
         image_url = element.get_attribute('src')
         print(image_url)
-        self.driver.execute_script("window.history.go(-1)")
-        sleep(delay)
+
     except NoSuchElementException:
         print('no image')
