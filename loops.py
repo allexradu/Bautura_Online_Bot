@@ -69,7 +69,6 @@ def product_page_loop(self, delay):
 
         if index != last_page:
             self.driver.get(url + '?p={index}'.format(index = index + 1))
-        self.driver.execute_script("window.history.go(-1)")
 
     self.driver.execute_script("window.history.go(-1)")
 
