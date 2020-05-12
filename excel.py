@@ -2,47 +2,45 @@ import openpyxl
 import pandas as pd
 import platform
 from openpyxl.styles import Alignment
+import excel_data
+import extra_functions
 
-data = {'Product ID': [], 'Product Name': [], 'Product Description': [], 'Category 1': [], 'Category 2': [],
-        'Alcohol Concentration': [], 'Image URL': []}
+product_data = excel_data.ExcelData()
+
+work_sheet_index = 2
 
 table_location = 'excel\\a.xlsx' if platform.system() == 'Windows' else 'excel/a.xlsx'
 
 
-def read_excel_first_column():
-    # Reading first column of a local excel file
-    try:
-        if platform.system() == 'Windows':
-            df = pd.read_excel(table_location, sheet_name = 0)
-        else:
-            df = pd.read_excel(table_location, sheet_name = 0)
-
-        print('Excel Read Complete!')
-
-        product_names = df['Description'].tolist()
-
-        return product_names
-    except:
-        print('Excel File NOT READ. Name your file "a.xls" with the first column "Name"')
-        print('and place it in the same directory and the bot file.')
-
-
-def add_data_to_workbook():
+def save_product_to_excel():
+    global work_sheet_index
     # loading the workbook
     wb = openpyxl.load_workbook(table_location)
 
     # wb.active returns a Worksheet object
     ws = wb.active
+    # adding the data to the workbook
+    main_category_key = extra_functions.value_key(product_data.main_category_cell_letter, work_sheet_index)
+    ws[main_category_key] = product_data.main_category
+    sub_category_key = extra_functions.value_key(product_data.sub_category_cell_letter, work_sheet_index)
+    ws[sub_category_key] = product_data.sub_category
+    product_title_key = extra_functions.value_key(product_data.product_title_cell_letter, work_sheet_index)
+    ws[product_title_key] = product_data.product_title
+    product_id_key = extra_functions.value_key(product_data.product_id_cell_letter, work_sheet_index)
+    ws[product_id_key] = product_data.product_id
+    price_text_key = extra_functions.value_key(product_data.price_text_cell_letter, work_sheet_index)
+    ws[price_text_key] = product_data.price_text
+    old_price_text_key = extra_functions.value_key(product_data.old_price_text_cell_letter, work_sheet_index)
+    ws[old_price_text_key] = product_data.old_price_text
+    description_key = extra_functions.value_key(product_data.description_cell_letter, work_sheet_index)
+    ws[description_key] = product_data.description
+    alcohol_concentration_key = extra_functions.value_key(product_data.alcohol_concentration_cell_letter,
+                                                          work_sheet_index)
+    ws[alcohol_concentration_key] = product_data.alcohol_concentration
+    brand_key = extra_functions.value_key(product_data.brand_cell_letter, work_sheet_index)
+    ws[brand_key] = product_data.brand
+    image_url_key = extra_functions.value_key(product_data.image_url_cell_letter, work_sheet_index)
+    ws[image_url_key] = product_data.image_url
 
-    row_index = 2
-    for each_row in descriptions:
-        # starting on cell B2 in the workbook
-        key = 'B{index}'.format(index = row_index)
-        # going down in the B column
-        ws[key] = each_row
-        # wrapping multiple lines into one cell
-        ws[key].alignment = Alignment(wrapText = True)
-        # incrementing index
-        row_index += 1
     # saving workbook
     wb.save(table_location)

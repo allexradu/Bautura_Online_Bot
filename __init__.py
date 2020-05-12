@@ -1,5 +1,4 @@
 import bb_bot
-import excel
 
 
 def main():

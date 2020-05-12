@@ -35,7 +35,7 @@ class BBBot:
         self.driver.execute_script("arguments[0].click();", element)
         sleep(delay)
 
-        # going back to main page
+        # going back to main page to trigger pop-up
         self.driver.execute_script("window.history.go(-1)")
         sleep(delay)
 
@@ -48,7 +48,7 @@ class BBBot:
         wait.until(ec.presence_of_element_located((By.ID,
                                                    '__ra-modal-box-1')))
 
-        # clicking of the closing X button
+        # clicking of the closing X button to close the pop-up
         element = self.driver.find_element_by_css_selector('div#__ra-modal-box-1>div>div>a')
         self.driver.execute_script("arguments[0].click();", element)
         sleep(delay)
