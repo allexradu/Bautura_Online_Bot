@@ -1,5 +1,7 @@
 category_url = ''
 sub_category_url = ''
+narrow_list_html = ''
+last_page = 0
 
 
 def sub_category_xpath(index):

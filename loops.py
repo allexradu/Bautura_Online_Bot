@@ -1,15 +1,10 @@
 from time import sleep
+
+from selenium.common.exceptions import ElementClickInterceptedException
+from selenium.common.exceptions import NoSuchElementException
+
 import extra_functions
 import ranges
-from selenium import webdriver
-from selenium.webdriver import ActionChains
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as ec
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import ElementClickInterceptedException
-
-last_page = 0
 
 
 def main_category_loop(self, delay):
@@ -58,19 +53,18 @@ def product_page_loop(self, delay):
     index = 1
 
     url = ''
-    global last_page
 
     try:
         element = self.driver.find_element_by_class_name('last-page')
         inner_html = element.get_attribute('innerHTML')
-        last_page = int(inner_html[(inner_html.find('p=') + 2):inner_html.find('">')])
+        extra_functions.last_page = int(inner_html[(inner_html.find('p=') + 2):inner_html.find('">')])
         url_raw = inner_html[(inner_html.find('href="') + 6): (inner_html.find('p=') + 2)]
         url = url_raw.replace('&amp;', '&') if url_raw.find('&') != 1 else url_raw
     except NoSuchElementException:
-        last_page = 1
+        extra_functions.last_page = 1
         print('last page indicator not detected')
 
-    while index <= last_page:
+    while index <= extra_functions.last_page:
 
         # for i in range(ranges.find_product_range_size(self) - 1):
         for i in range(1):
@@ -84,13 +78,13 @@ def product_page_loop(self, delay):
             self.driver.execute_script("window.history.go(-1)")
             sleep(delay)
 
-        if last_page == 1:
+        if extra_functions.last_page == 1:
             print('first page is last page, going back 1')
             self.driver.execute_script("window.history.go(-1)")
             sleep(10)
             break
 
-        if index != last_page:
+        if index != extra_functions.last_page:
             print('current product page url + {url}{index}'.format(index = index, url = url))
             print('next product page url + {url}{index}'.format(index = index + 1, url = url))
             sleep(delay)

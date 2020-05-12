@@ -1,21 +1,13 @@
-from selenium import webdriver
-from selenium.webdriver import ActionChains
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as ec
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import ElementClickInterceptedException
-import extra_functions
 
-narrow_list_html = ''
+import extra_functions
 
 
 def find_sub_category_range_size(self):
-    global narrow_list_html
     range_size = 1
 
     try:
-        narrow_list_html = self.driver.find_element_by_id('narrow-by-list').get_attribute('innerHTML')
+        extra_functions.narrow_list_html = self.driver.find_element_by_id('narrow-by-list').get_attribute('innerHTML')
     except NoSuchElementException:
         print('Not found narrow_by_list')
 
@@ -33,7 +25,7 @@ def find_sub_category_range_size(self):
                 break
         else:
 
-            if narrow_list_html.find('<dt>Categorie</dt>') != -1:
+            if extra_functions.narrow_list_html.find('<dt>Categorie</dt>') != -1:
                 print('Found Category: ' + elem.text + 'Index is:' + str(range_size))
                 range_size += 1
             else:
