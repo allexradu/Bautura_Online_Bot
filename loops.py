@@ -9,6 +9,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import ElementClickInterceptedException
 
+last_page = 0
+
 
 def main_category_loop(self, delay):
     for main_category_index in range(2, 9):
@@ -21,42 +23,57 @@ def main_category_loop(self, delay):
 
         sleep(delay)
 
-        sub_category_loop(self, ranges.find_sub_category_range_size(self), delay)
+        sub_category_loop(self, delay)
+        print('Main category index is:', main_category_index)
 
 
-def sub_category_loop(self, loop_size, delay):
+def sub_category_loop(self, delay):
+    sleep(delay)
+    loop_size = ranges.find_sub_category_range_size(self)
+
+    sleep(delay)
+
     if loop_size != 0:
-        print('sub cat', loop_size)
+        print('Sub Category Index: ', loop_size)
         for i in range(loop_size):
             # clicking on the fist sub-category
             # //*[@id="narrow-by-list"]/dd[1]/ol/li[THIS IS THE PARAMETER THAT CHANGES]/a
             try:
                 element = self.driver.find_element_by_xpath(extra_functions.sub_category_xpath(i))
                 sub_category = element.text
-                print(sub_category)
+                print('Sub category: ', sub_category)
                 element.click()
                 sleep(delay)
                 product_page_loop(self, delay)
 
             except NoSuchElementException:
-                print('no element')
+                print('No Element Sub Category: ', i)
+                print('XPATH: ', extra_functions.sub_category_xpath(i))
+
             except ElementClickInterceptedException:
                 print('element interrupted')
 
 
-        else:
-            product_page_loop(self, delay)
-
-
 def product_page_loop(self, delay):
-    element = self.driver.find_element_by_class_name('last-page')
-    inner_html = element.get_attribute('innerHTML')
-    last_page = int(inner_html[(inner_html.find('p=') + 2):inner_html.find('">')])
-    url = inner_html[(inner_html.find('href="') + 6): inner_html.find('p=')]
     index = 1
 
+    url = ''
+    global last_page
+
+    try:
+        element = self.driver.find_element_by_class_name('last-page')
+        inner_html = element.get_attribute('innerHTML')
+        last_page = int(inner_html[(inner_html.find('p=') + 2):inner_html.find('">')])
+        url_raw = inner_html[(inner_html.find('href="') + 6): (inner_html.find('p=') + 2)]
+        url = url_raw.replace('&amp;', '&') if url_raw.find('&') != 1 else url_raw
+    except NoSuchElementException:
+        last_page = 1
+        print('last page indicator not detected')
+
     while index <= last_page:
-        for i in range(ranges.find_product_range_size(self) - 1):
+
+        # for i in range(ranges.find_product_range_size(self) - 1):
+        for i in range(1):
             clicking_on_product(self, i, delay)
             getting_product_id(self, delay)
             getting_price(self, delay)
@@ -67,23 +84,29 @@ def product_page_loop(self, delay):
             self.driver.execute_script("window.history.go(-1)")
             sleep(delay)
 
+        if last_page == 1:
+            print('first page is last page, going back 1')
+            self.driver.execute_script("window.history.go(-1)")
+            sleep(10)
+            break
+
         if index != last_page:
-            self.driver.get(url + '?p={index}'.format(index = index + 1))
+            print('current product page url + {url}{index}'.format(index = index, url = url))
+            print('next product page url + {url}{index}'.format(index = index + 1, url = url))
+            sleep(delay)
+            self.driver.get(url + '{index}'.format(index = index + 1))
+            sleep(delay)
+            index += 1
 
-    self.driver.execute_script("window.history.go(-1)")
+        else:
+            print('current product page url {url}{index}'.format(index = index, url = url))
+            for i in range(index):
+                print('going back {index} time(s)'.format(index = i + 1))
+                print('current product page url {url}{index}'.format(index = index, url = url))
+                self.driver.execute_script("window.history.go(-1)")
 
-    # element = self.driver.find_element_by_class_name('last-page')
-    # html_string = element.get_attribute('innerHTML')
-    # last_page = int(html_string[(html_string.find('?p=') + 3): html_string.find('"><span>')])
-
-    # if index != last_page:
-    #     self.driver.get(navigation_url + '?p={index}'.format(index = index))
-    # else:
-    #     if has_sub_category:
-    #         self.driver.get(main_category_url)
-    #         break
-    #     else:
-    #         break
+            sleep(10)
+            break
 
 
 def clicking_on_product(self, i, delay):
@@ -93,7 +116,7 @@ def clicking_on_product(self, i, delay):
         element = self.driver.find_element_by_xpath(
             '/html/body/main/div/div/div/div[2]/div[6]/ul/li[{index}]/div/div/div[1]/p/a'.format(index = i + 1))
         product_title = element.text
-        print(product_title)
+        print("Product title:", product_title)
         element.click()
         sleep(delay)
 
@@ -131,10 +154,11 @@ def getting_price(self, delay):
             'product-price-{product_id}'.format(product_id = getting_product_id(self, delay)))
         price_text = element.text
         price = price_text[0: price_text.find(' RON')]
-        print('Price is:', price)
+        # print('Price is:', price)
         sleep(delay)
     except NoSuchElementException:
-        print('no price')
+        print('')
+    # print('no price')
 
     try:
         # getting old price
@@ -142,10 +166,11 @@ def getting_price(self, delay):
             'old-price-{product_id}'.format(product_id = getting_product_id(self, delay)))
         old_price_text = element.text
         old_price = old_price_text[0: price_text.find(' RON')]
-        print('Price is:', old_price)
+        # print('Price is:', old_price)
         sleep(delay)
     except NoSuchElementException:
-        print('no old price')
+        print('')
+        # print('no old price')
 
 
 def getting_description(self, delay):
@@ -185,12 +210,13 @@ def getting_attributes(self, delay):
 
         alcohol_concentration = extract_attributes_from_html(string = attributes_html_string,
                                                              key = 'Concentrație Alcoolică')
-        print(alcohol_concentration)
+        # print(alcohol_concentration)
         brand = extract_attributes_from_html(string = attributes_html_string, key = 'Brand')
-        print(brand)
+        # print(brand)
         sleep(delay)
     except NoSuchElementException:
-        print('no attributes')
+        print('')
+        # print('no attributes')
 
 
 def getting_product_image_url(self, delay):
@@ -198,7 +224,7 @@ def getting_product_image_url(self, delay):
         # selecting the product image and printing the link
         element = self.driver.find_element_by_id('product-image-img')
         image_url = element.get_attribute('src')
-        print(image_url)
+        # print(image_url)
 
     except NoSuchElementException:
         print('no image')
