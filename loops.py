@@ -188,7 +188,7 @@ def getting_price(self, delay):
             'product-price-{product_id}'.format(product_id = getting_product_id(self, delay)))
         excel.product_data.price_text = element.text
         price = excel.product_data.price_text[0: excel.product_data.price_text.find(' RON')]
-        # print('Price is:', price)
+        print('Price is:', price)
         sleep(delay)
     except NoSuchElementException:
         print('No price found')
@@ -201,7 +201,7 @@ def getting_price(self, delay):
         excel.product_data.old_price_text = element.text
         old_price = excel.product_data.old_price_text[
                     0: excel.product_data.price_text.find(' RON')]
-        # print('Price is:', old_price)
+        print('Old price is:', old_price)
         sleep(delay)
     except NoSuchElementException:
         print('No old price found')
@@ -217,16 +217,6 @@ def getting_description(self, delay):
         sleep(delay)
         # getting the text of the div
         excel.product_data.description = element.get_attribute('innerHTML')
-
-        # old code - do not regard
-        # # cleaning the description by removing <div> and </div>
-        # string_with_beginning_div = excel.product_data.description[
-        #                             0:excel.product_data.description.find('<p>')]
-        # excel.product_data.description = excel.product_data.description.replace(string_with_beginning_div, '')
-        # string_with_ending_div =
-        # excel.product_data.description[(excel.product_data.description.rfind('</p>') + 4): -1]
-        # description = excel.product_data.description.replace(string_with_ending_div, '')
-
         print(excel.product_data.description)
         sleep(delay)
     except NoSuchElementException:

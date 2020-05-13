@@ -1,5 +1,4 @@
 import openpyxl
-import pandas as pd
 import platform
 from openpyxl.styles import Alignment
 import excel_data
