@@ -213,18 +213,21 @@ def getting_description(self, delay):
         sleep(delay)
         # getting the description
         # finding the outer div that contains the description
-        element = self.driver.find_element_by_css_selector('div#pc-tab-description')
+        element = self.driver.find_element_by_css_selector('div#pc-tab-description>div')
         sleep(delay)
         # getting the text of the div
         excel.product_data.description = element.get_attribute('innerHTML')
-        # cleaning the description by removing <div> and </div>
-        string_with_beginning_div = excel.product_data.description[
-                                    0:excel.product_data.description.find('<p>')]
-        excel.product_data.description = excel.product_data.description.replace(string_with_beginning_div, '')
-        # rfind searched from the end of the string
-        string_with_ending_div = excel.product_data.description[(excel.product_data.description.rfind('</p>') + 4): -1]
-        description = excel.product_data.description.replace(string_with_ending_div, '')
-        print(description)
+
+        # old code - do not regard
+        # # cleaning the description by removing <div> and </div>
+        # string_with_beginning_div = excel.product_data.description[
+        #                             0:excel.product_data.description.find('<p>')]
+        # excel.product_data.description = excel.product_data.description.replace(string_with_beginning_div, '')
+        # string_with_ending_div =
+        # excel.product_data.description[(excel.product_data.description.rfind('</p>') + 4): -1]
+        # description = excel.product_data.description.replace(string_with_ending_div, '')
+
+        print(excel.product_data.description)
         sleep(delay)
     except NoSuchElementException:
         excel.product_data.description = 'n/a'

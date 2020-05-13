@@ -34,6 +34,7 @@ def save_product_to_excel():
     ws[old_price_text_key] = product_data.old_price_text
     description_key = extra_functions.value_key(product_data.description_cell_letter, work_sheet_index)
     ws[description_key] = product_data.description
+    ws[description_key].alignment = Alignment(wrapText = True)
     alcohol_concentration_key = extra_functions.value_key(product_data.alcohol_concentration_cell_letter,
                                                           work_sheet_index)
     ws[alcohol_concentration_key] = product_data.alcohol_concentration
