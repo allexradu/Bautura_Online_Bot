@@ -22,6 +22,8 @@ def extract_attributes_from_html(string, key):
         start_concentration_string = string.find('<td class="data">', start_label_string) + 17
         end_concentration_string = string.find('</td>', start_label_string)
         return string[start_concentration_string:end_concentration_string]
+    else:
+        return 'n/a'
 
 
 def value_key(cell_letter, cell_number):

@@ -239,7 +239,7 @@ def getting_attributes(self, delay):
         # print(excel.product_data.alcohol_concentration)
         excel.product_data.brand = extra_functions.extract_attributes_from_html(string = attributes_html_string,
                                                                                 key = 'Brand')
-        # print(excel.product_data.brand)
+        print(excel.product_data.brand)
         sleep(delay)
     except NoSuchElementException:
         print('Mo product attributes found')

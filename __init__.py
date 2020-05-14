@@ -3,7 +3,7 @@ import bb_bot
 
 def main():
     print('================================================================================')
-    print('|             Bautura-Online.ro 1.0.0.0 by Allex Radu [www.ATFR.net]            |')
+    print('|             Bautura-Online.ro 1.0.0.2 by Allex Radu [www.ATFR.net]            |')
     print('|   Get the latest version at https://github.com/allexradu/Bautura_Online_Bot   |')
     print('================================================================================')
     print('|     Instructions: Save your Excel Workbook as "a.xls" and place it in         |')
