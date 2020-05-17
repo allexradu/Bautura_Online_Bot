@@ -15,7 +15,7 @@ class BBBot:
     def __init__(self, delay):
         # Uncomment the lines bellow to run Chrome Headless
         # self.display = Display(visible = 0, size = (1920, 1080))
-        # display.start()
+        # self.display.start()
         # chrome_options = Options()
         # chrome_options.add_argument("--headless")
         # self.driver = webdriver.Chrome(options = chrome_options)
