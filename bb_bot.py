@@ -1,5 +1,6 @@
 from time import sleep
 
+from pyvirtualdisplay import Display
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -10,6 +11,9 @@ import loops
 
 class BBBot:
     def __init__(self, delay):
+        # display = Display(visible = 0, size = (1920, 1080))
+        # display.start()
+
         # opening browser window
         self.driver = webdriver.Chrome()
 
