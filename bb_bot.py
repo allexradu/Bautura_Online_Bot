@@ -15,18 +15,15 @@ import loops
 class BBBot:
     def __init__(self, delay):
         # Uncomment the lines bellow to run Chrome Headless
-        # self.display = Display(visible = 0, size = (1920, 1080))
-        # self.display.start()
-
-        chrome_options = Options()
-        chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("--headless")
-        chrome_options.add_argument("disable-gpu")
-        chrome_options.add_argument("window-size=1400,2100")
-        self.driver = webdriver.Chrome(ChromeDriverManager().install(), options = chrome_options)
+        # chrome_options = Options()
+        # chrome_options.add_argument("--no-sandbox")
+        # chrome_options.add_argument("--headless")
+        # chrome_options.add_argument("disable-gpu")
+        # chrome_options.add_argument("window-size=1400,2100")
+        # self.driver = webdriver.Chrome(ChromeDriverManager().install(), options = chrome_options)
 
         # opening browser window
-        # self.driver = webdriver.Chrome()
+        self.driver = webdriver.Chrome()
 
         # maximizing window
         self.driver.maximize_window()
