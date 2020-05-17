@@ -5,14 +5,20 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 
 import loops
 
 
 class BBBot:
     def __init__(self, delay):
-        # display = Display(visible = 0, size = (1920, 1080))
+        # Uncomment the lines bellow to run Chrome Headless
+        # self.display = Display(visible = 0, size = (1920, 1080))
         # display.start()
+        # chrome_options = Options()
+        # chrome_options.add_argument("--headless")
+        # self.driver = webdriver.Chrome(options = chrome_options)
 
         # opening browser window
         self.driver = webdriver.Chrome()
