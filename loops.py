@@ -1,11 +1,27 @@
 from time import sleep
-
+import threading
 from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.common.exceptions import NoSuchElementException
+import datetime
+import threading
 
 import extra_functions
 import ranges
 import excel
+
+time = datetime.datetime.now()
+
+threads = []
+
+
+# class run_thread(threading.Thread):
+#     def __init__(self, thread_id, function):
+#         self.function = function
+#         super().__init__()
+#         self.threadID = thread_id
+#
+#     def run(self):
+#         self.function()
 
 
 def main_category_loop(self, delay):
@@ -30,6 +46,7 @@ def main_category_loop(self, delay):
 
 def sub_category_loop(self, delay):
     """This function loops trough the available sub-categories"""
+    global threads
     sleep(delay)
     loop_size = ranges.find_sub_category_range_size(self)
 
@@ -51,7 +68,9 @@ def sub_category_loop(self, delay):
                 sleep(delay)
 
                 # looping trough product pages at the specified category
-                product_page_loop(self, delay)
+                main_thread = threading.Thread(target = product_page_loop(self, delay))
+                main_thread.start()
+                threads.append(main_thread)
 
             except NoSuchElementException:
                 print('no element sub-category: ', i)
@@ -67,6 +86,9 @@ def product_page_loop(self, delay):
     """This function loops over the product pages in a category or sub-category"""
     index = 1
     url = ''
+
+    for thread in threads:
+        thread.join()
 
     try:
         # finding the class that has the "»", the url to the last page from the page selector
@@ -91,6 +113,7 @@ def product_page_loop(self, delay):
     while index <= extra_functions.last_page:
 
         for i in range(ranges.find_product_range_size(self) - 1):
+            global time
             # for i in range(1):  # FOR TESTING ONLY, REPLACE WITH THE LINE ABOVE!!!
             # clicking on the product at hte index
             clicking_on_product(self, i, delay)
@@ -104,9 +127,21 @@ def product_page_loop(self, delay):
             getting_attributes(self, delay)
             # getting the product image URL
             getting_product_image_url(self, delay)
+
             # move the browser back to current product page
-            excel.save_product_to_excel()
-            excel.work_sheet_index += 1
+
+            def save_excel():
+                global time
+                time_difference = datetime.datetime.now() - time
+                excel.product_data.time_difference = '{} s'.format(str(time_difference))
+                time = datetime.datetime.now()
+                excel.product_data.time = time.strftime("%d-%m-%Y %H:%M:%S")
+                excel.save_product_to_excel()
+                excel.work_sheet_index += 1
+
+            excel_thread = threading.Thread(target = save_excel)
+            excel_thread.start()
+            threads.append(excel_thread)
 
             self.driver.execute_script("window.history.go(-1)")
             sleep(delay)

@@ -41,6 +41,9 @@ def save_product_to_excel():
     ws[brand_key] = product_data.brand
     image_url_key = extra_functions.value_key(product_data.image_url_cell_letter, work_sheet_index)
     ws[image_url_key] = product_data.image_url
-
+    time_key = extra_functions.value_key(product_data.time_letter, work_sheet_index)
+    ws[time_key] = product_data.time
+    time_difference_key = extra_functions.value_key(product_data.time_difference_letter, work_sheet_index)
+    ws[time_difference_key] = product_data.time_difference
     # saving workbook
     wb.save(table_location)

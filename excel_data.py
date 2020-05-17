@@ -21,3 +21,7 @@ class ExcelData(object):
         self.brand_cell_letter = 'D'
         self.image_url = ''
         self.image_url_cell_letter = 'J'
+        self.time = ''
+        self.time_letter = 'K'
+        self.time_difference = ''
+        self.time_difference_letter = 'L'
