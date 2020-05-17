@@ -7,6 +7,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 
 import loops
 
@@ -14,14 +15,15 @@ import loops
 class BBBot:
     def __init__(self, delay):
         # Uncomment the lines bellow to run Chrome Headless
-        self.display = Display(visible = 0, size = (1920, 1080))
-        self.display.start()
+        # self.display = Display(visible = 0, size = (1920, 1080))
+        # self.display.start()
+
         chrome_options = Options()
-        chrome_options.add_argument("--disable-extensions")
-        chrome_options.add_argument("--disable-gpu")
-        chrome_options.add_argument("--no-sandbox")  # linux only
+        chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--headless")
-        self.driver = webdriver.Chrome(options = chrome_options)
+        chrome_options.add_argument("disable-gpu")
+        chrome_options.add_argument("window-size=1400,2100")
+        self.driver = webdriver.Chrome(ChromeDriverManager().install(), options = chrome_options)
 
         # opening browser window
         # self.driver = webdriver.Chrome()
