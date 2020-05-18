@@ -14,16 +14,6 @@ time = datetime.datetime.now()
 threads = []
 
 
-# class run_thread(threading.Thread):
-#     def __init__(self, thread_id, function):
-#         self.function = function
-#         super().__init__()
-#         self.threadID = thread_id
-#
-#     def run(self):
-#         self.function()
-
-
 def main_category_loop(self, delay):
     """This loop function goes trough the MAIN product categories"""
     for main_category_index in range(2, 9):
